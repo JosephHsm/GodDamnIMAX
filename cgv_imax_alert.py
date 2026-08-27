@@ -19,6 +19,7 @@ from datetime import date, timedelta
 import requests
 
 MOVIE_KEYWORD = "오디세이"   # 빈 문자열("")이면 모든 IMAX 상영 감지
+NTFY_TOPIC = os.environ.get("NTFY_TOPIC", "여기에-토픽이름")  # ntfy 앱에서 구독한 토픽
 THEATERS = {"용산아이파크몰": "0013", "왕십리": "0074"}
 AREA_CODE = "01"
 DAYS_AHEAD = 21
@@ -70,6 +71,17 @@ def notify(title: str, message: str):
         notification.notify(title=title, message=message, timeout=10)
     except Exception:
         pass
+    # ntfy 푸시 (폰 알림, 세팅 제일 간단)
+    if NTFY_TOPIC and "토픽이름" not in NTFY_TOPIC:
+        try:
+            requests.post(
+                f"https://ntfy.sh/{NTFY_TOPIC}",
+                data=message.encode("utf-8"),
+                headers={"Title": title.encode("utf-8"), "Priority": "high", "Tags": "clapper"},
+                timeout=10,
+            )
+        except requests.RequestException:
+            pass
     token = os.environ.get("TELEGRAM_BOT_TOKEN")
     chat_id = os.environ.get("TELEGRAM_CHAT_ID")
     if token and chat_id:
