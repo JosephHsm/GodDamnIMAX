@@ -20,7 +20,7 @@ import requests
 
 MOVIE_KEYWORD = "오디세이"   # 빈 문자열("")이면 모든 IMAX 상영 감지
 NTFY_TOPIC = os.environ.get("NTFY_TOPIC", "여기에-토픽이름")  # ntfy 앱에서 구독한 토픽
-THEATERS = {"용산아이파크몰": "0013", "왕십리": "0074"}
+THEATERS = {"용산아이파크몰": "0013", "왕십리": "0074", "천호": "0199"}
 AREA_CODE = "01"
 DAYS_AHEAD = 21
 INTERVAL_SEC = 300
