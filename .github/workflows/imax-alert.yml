@@ -1,12 +1,11 @@
+# .github/workflows/imax-alert.yml 경로에 넣으면 됨
 name: CGV IMAX Open Alert
 
 on:
-  schedule:
-    - cron: '*/10 * * * *'
-  workflow_dispatch:
+  workflow_dispatch:          # 수동 실행 + cron-job.org에서 이걸 10분마다 호출
 
 permissions:
-  contents: write
+  contents: write             # 상태 파일 커밋용
 
 jobs:
   check:
@@ -30,4 +29,10 @@ jobs:
           git config user.name "imax-bot"
           git config user.email "bot@users.noreply.github.com"
           git add imax_state.json
-          git diff --cached --quiet || git commit -m "update state" && git push
+          git diff --cached --quiet && exit 0
+          git commit -m "update state"
+          for i in 1 2 3 4 5; do
+            git pull --rebase origin main && git push origin main && break
+            echo "push failed, retrying ($i)..."
+            sleep 5
+          done
