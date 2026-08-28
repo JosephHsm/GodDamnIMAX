@@ -98,6 +98,7 @@ def notify(title: str, message: str):
 def scan_once(state: dict, silent_baseline: bool = False):
     today = date.today()
     dates = [(today + timedelta(days=i)).strftime("%Y%m%d") for i in range(DAYS_AHEAD)]
+    print(f"--- 스캔 시작: {today.isoformat()} 기준 {DAYS_AHEAD}일치 확인 ---")
 
     for name, code in THEATERS.items():
         known = set(state.get(name, []))
@@ -119,6 +120,8 @@ def scan_once(state: dict, silent_baseline: bool = False):
                     f"새 상영 날짜: {pretty}\n지금 CGV 앱에서 예매하세요!",
                 )
             known |= set(new_dates)
+        else:
+            print(f"  [확인 완료] {name}: 새로 오픈된 '{MOVIE_KEYWORD}' IMAX 날짜 없음 (기존 {len(known)}개 유지)")
 
         state[name] = sorted(d for d in known if d >= dates[0])
 
